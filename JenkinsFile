@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M7" and add it to the path.
+        maven "maven"
+    }
+	
+	
+	 environment{
+        API_KEY = "MmRiOWVjNGZmN2ViZjY1ZmRkZGRjZWUzMjc0OWYyODEzN2NmZWFjNThlZWRhYjlmNjA2YjZmNTg1MDIzN2U5NzA1"
+        PROFILE_ID = "4520"
+        myplatform = "amd64"
+        myos = "linux"
+        mybuild = "apitest"
+    }
+
+    stages {
+        stage('Build') {
+            steps {               
+                 sh "mvn clean test"
+            }   
+            }
+		stage('report upload') {
+            steps {
+                // sh 'curl -X POST ' +
+                //    '-H "x-api-key:${API_KEY}" ' +
+                //    '-H "multipart/form-data" '+
+                //    '-F "file[]=@target/surefire-reports/API-Testing/Test.xml"' +
+                //    '"https://test.calliope.pro/api/v2/profile/${PROFILE_ID}/import/junit?tag[]=myos&tag[]=myplatform&tag[]=mybuild"'
+                   sh 'curl -X POST ' +
+                   '-H "x-api-key:${API_KEY}" -H "multipart/form-data" -F "file[]=@target/surefire-reports/API-Testing/Test.xml" "https://app.calliope.pro/api/v2/profile/${PROFILE_ID}/import/junit?tag[]=${myos}&tag[]=${myplatform}&tag[]=${mybuild}"'
+            }
+        }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
